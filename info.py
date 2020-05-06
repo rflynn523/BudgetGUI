@@ -1,12 +1,23 @@
 # Contains information and some helper functions that almost every file needs.
 import openpyxl as xl
+import tkinter as tk
 
 # Helper Function
-def getOpenRow(sheet, startRow, startCol):
-    while(sheet[startRow][startCol].value != None):
-        startRow += 1
+# If key is not passed then the function returns the open row number
+# Otherwise it returns the row that contains the key
+def getRowNum(sheet, startRow, startCol, key=None):
+    if(key == None):
+        while(sheet[startRow][startCol].value != None):
+            startRow += 1
+
+    else:
+        while (sheet[startRow][startCol].value != key):
+            startRow += 1
 
     return startRow
+
+# Window variable
+window = tk.Tk()
 
 # Get info from the config file
 config = open(r"BudgetGuiConfig.txt", "r")

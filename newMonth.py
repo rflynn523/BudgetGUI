@@ -1,5 +1,6 @@
 # Handles all of the nessesary steps and functions need to reset the spreadsheet for a new month
 import info
+import createGUI
 import openpyxl as xl
 
 def new_month():
@@ -10,90 +11,102 @@ def new_month():
     copyTotalValues(info.monthSheetData, info.yearSheetData, info.yearSheetEq)
 
     # Update the Grocery and Gas tables by moving the equation to the next month and only
-    # saving the values of the previous month.
-    updateGrocGasTables(info.monthSheetData, info.monthSheetEq)
+    # # saving the values of the previous month.
+    # updateGrocGasTables(info.monthSheetData, info.monthSheetEq)
 
     # Get the data from the Entries table from Monthly, write that data to the 'Data Set'
     # sheet and then clear the Entries table
     updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
 
+    # # Update the month in the BudgetGuiConfig file
+    # # updateMonth(info.months[info.months.index(info.month) + 1])
+
     # Save only the EQUATIONS workbook file
     info.wbEq.save(info.excelFile)
 
+    # Perform all of the checks
+
     # Call the updateValues function to update the GUI once its complete
+    createGUI.updateGUI()
 
+# Helper function that determines the yearly month starting cell by using month
+# and yearly_month_cells from info.py
 def getMonthStartCell():
-    for i in range(len(info.months)):
-        check = info.months[i]
-        if(info.month == check):
-            # Update month
+    return info.yearly_month_cells.get(info.month)
 
-            # Loop around to the start of the list
-            if (i == 11):
-                i = 0
-
-            updateMonth(info.months[i+1])
-            return info.yearly_month_cells.get(check)
-
+# Writes the newMonth to the config file and also updates the month from info.py
 def updateMonth(newMonth):
+    # Read everything from the text file
     with open(r"BudgetGuiConfig.txt", 'r') as oldFile:
         data = oldFile.readlines()
 
+    # Change the first line containing the month
     data[0] = newMonth + '\n'
+
+    # Save the second line (the excel file name)
     data[1] = info.excelFile
 
+    # Write back all of the data to config file
     with open(r'BudgetGuiConfig.txt', 'w') as newFile:
         newFile.writelines(data)
 
+    # Update program month
     info.month = newMonth
 
     # Write the new month to the monthly cell
+    info.monthSheetEq.cell(row = 23, column = 1).value = newMonth
 
+# Copy only the values from the summary table to the "Yearly" Sheet
 def copySummaryTable(monthSheetData, yearSheetEq):
-    # Copy only the values from the summary table to the "Yearly" Sheet
-
     # Starting at 'Rent' cell in amounts column of the category table
     categoryList = []
+
+    # Find the last row in the monthly category table
     row = 3
+    lastRow = info.getRowNum(monthSheetData, row, 1)
     monthCell = monthSheetData[row][2]
 
     # Loop down the amounts column, saving all of the numbers
-    for x in range(8):
+    for x in range(lastRow - row):
         # Clean values are not needed because excel needs to see the values as numbers not strings
         categoryList.append(monthCell.value)
         row += 1
         monthCell = monthSheetData[row][2]
 
-    # Write to the yearly sheet of the EQUATIONS file
-    # For the current month according to the config file
+    # Write to the yearly sheet of the EQUATIONS file for the current month according to the config file
     monthCellList = getMonthStartCell()
     row, col = monthCellList[0], monthCellList[1]
 
-    for y in range(8):
-        yearSheetEq.cell(row = row, column = col).value = categoryList[y];
+    # Write in the data
+    for y in categoryList:
+        yearSheetEq.cell(row = row, column = col).value = y
         row += 1
 
-# # # Copy Total Spent, Total(Besides R/P), and NET cells to yearly\
+# Copy Total Spent, Total(Besides R/P), and NET cells to the yearly sheet
 def copyTotalValues(monthSheetData, yearSheetData, yearSheetEq):
-    # Getting data from DATA wb
-    totalSpent = monthSheetData[12][2].value
-    totBesidesRP = monthSheetData[14][2].value
-    net =  monthSheetData[16][2].value
+    # Get the data from the DATA workbook
+    totalSpent = monthSheetData[info.getRowNum(monthSheetData, 2, 1, "Total")][2].value
+    totBesidesRP = monthSheetData[info.getRowNum(monthSheetData, 2, 1, "Total (Besides R/P)")][2].value
+    net = monthSheetData[info.getRowNum(monthSheetData, 2, 1, "Spending Money")][2].value
 
-    nextOpen = info.getOpenRow(yearSheetData, 22, 12)
+    # Find the next open row in the yearly table
+    nextOpen = info.getRowNum(yearSheetData, 22, 12)
 
     # Writing data to EQUATION file
     yearSheetEq.cell(row=nextOpen, column=13).value = totalSpent
     yearSheetEq.cell(row=nextOpen, column=14).value = totBesidesRP
     yearSheetEq.cell(row=nextOpen, column=15).value = net
 
+# Copy the values in the groceries and gas tables into to the same cells so those months get saved.
 def updateGrocGasTables(monthSheetData, monthSheetEq):
-    # # Copy the values in the groceries and gas tables into to the same cells so those months get saved.
-    current = info.getOpenRow(monthSheetData, 31, 10) - 1
+    # Saves the next open row in the Grocery and Gas tables
+    current = info.getRowNum(monthSheetData, 31, 10) - 1
 
+    # Get the values
     grocTotalData = monthSheetData[current][9].value
     grocAvgData = monthSheetData[current][10].value
 
+    # Get the equations
     grocTotalEq = monthSheetEq[current][9].value
     grocAvgEq = monthSheetEq[current][10].value
 
@@ -120,10 +133,10 @@ def updateGrocGasTables(monthSheetData, monthSheetEq):
     monthSheetEq.cell(row=current + 1, column=14).value = gasTotalEq
     monthSheetEq.cell(row=current + 1, column=15).value = gasAvgEq
 
+# Cut the data from the Monthly Entries table and paste it into the Data Set sheet
 def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
-# Get the last row number of the data
-    lastRow = info.getOpenRow(monthSheetData, 24, 1) - 1
-    print(lastRow)
+    # Get the last row number of the data
+    lastRow = info.getRowNum(monthSheetData, 24, 1) - 1
     dataList = []
 
     # Get each data row into a list and then add that list to dataList
@@ -134,10 +147,9 @@ def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
 
         dataList.append(dataRow)
 
-    # Copy the dataList into the Data Set sheet and insert the MONTH() formula
-    nextOpen = info.getOpenRow(dataSetSheet, 3, 4)
+    nextOpen = info.getRowNum(dataSetSheet, 3, 4)
 
-    # Insert the data row by row
+    # Copy the dataList into the Data Set sheet and insert the MONTH() formula, row by row
     for d in range(nextOpen, nextOpen + len(dataList)):
         temp = dataList[d - nextOpen]
         dataSetSheet.cell(row=d, column=4).value = "=MONTH(E" + str(d) + ")"
@@ -155,4 +167,4 @@ def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
     # Clear the entries table from the "Monthly" sheet
     for i in range(25, lastRow + 1):
         for j in range(1, 6):
-            info.monthSheetEq.cell(row = i, column = j).value = None
+            monthSheetEq.cell(row = i, column = j).value = None
