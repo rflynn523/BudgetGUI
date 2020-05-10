@@ -25,6 +25,7 @@ def create_GUI(sheet):
             color = "orangered"
         else:
             color = colors[x]
+
         tk.Label(info.window, text=text, font="Calibri 12", relief='solid', bg = color, width=20).grid(row=x, column=2, columnspan=2, sticky=tk.E, padx=5, pady=5)
 
     create_category_table(sheet)
@@ -35,7 +36,6 @@ def create_category_table(sheet):
     row = 3
     col = 2
     lastRow = info.getRowNum(sheet, row, 1)
-    # monthCell = sheet[row][2]
 
     # Loops through the category names
     # Starts at the rent cell
@@ -89,6 +89,9 @@ def clean_values(cell):
 def updateGUI():
     # Re-load the workbook
     newWbData = xl.load_workbook(info.excelFile, data_only=True)
+
+    # Update the Display Month
+    info.window.title("Budget GUI - " + info.month)
 
     # Re-create the GUI
     create_GUI(newWbData['Monthly'])

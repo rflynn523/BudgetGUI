@@ -2,6 +2,7 @@
 import info
 import createGUI
 import openpyxl as xl
+import newMonthCheck
 
 def new_month():
     # Copy the VALUES from the monthly Category Table to the corresponding table in Yearly
@@ -12,27 +13,31 @@ def new_month():
 
     # Update the Grocery and Gas tables by moving the equation to the next month and only
     # # saving the values of the previous month.
-    # updateGrocGasTables(info.monthSheetData, info.monthSheetEq)
+    updateGrocGasTables(info.monthSheetData, info.monthSheetEq)
 
     # Get the data from the Entries table from Monthly, write that data to the 'Data Set'
     # sheet and then clear the Entries table
     updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
 
     # # Update the month in the BudgetGuiConfig file
-    # # updateMonth(info.months[info.months.index(info.month) + 1])
+    updateMonth(info.months[info.months.index(info.month) + 1])
 
     # Save only the EQUATIONS workbook file
     info.wbEq.save(info.excelFile)
 
     # Perform all of the checks
+    newMonthCheck.makeAllChecks()
 
     # Call the updateValues function to update the GUI once its complete
     createGUI.updateGUI()
 
 # Helper function that determines the yearly month starting cell by using month
 # and yearly_month_cells from info.py
-def getMonthStartCell():
-    return info.yearly_month_cells.get(info.month)
+def getMonthStartCell(month=None):
+    if (month == None):
+        return info.yearly_month_cells.get(info.month)
+    else:
+        return info.yearly_month_cells.get(month)
 
 # Writes the newMonth to the config file and also updates the month from info.py
 def updateMonth(newMonth):

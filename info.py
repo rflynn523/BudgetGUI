@@ -5,14 +5,35 @@ import tkinter as tk
 # Helper Function
 # If key is not passed then the function returns the open row number
 # Otherwise it returns the row that contains the key
-def getRowNum(sheet, startRow, startCol, key=None):
-    if(key == None):
+def getRowNum(sheet, startRow, startCol, key=None, month=None):
+    # Simply return the next open row number with the given params
+    if(key == None and month==None):
         while(sheet[startRow][startCol].value != None):
             startRow += 1
+            if(startRow == 100):
+                break
 
+    # Return the row where the cell is equal to the key
+    elif(month == None):
+        # Makes sure program doesnt crash if string is handled wrong
+        if(type(key) == str):
+            while (str(sheet[startRow][startCol].value) != key):
+                startRow += 1
+                if (startRow == 100):
+                    break
+        else:
+            while (sheet[startRow][startCol].value != key):
+                startRow += 1
+                if (startRow == 100):
+                    break
+
+    # Used for the Data Set Check
+    # Returns the row when the date is equal to the month (passed in as a number)
     else:
-        while (sheet[startRow][startCol].value != key):
+        while ((sheet[startRow+1][startCol].value).month != month):
             startRow += 1
+            if (startRow == 100):
+                break
 
     return startRow
 
@@ -45,6 +66,7 @@ wbEq = xl.load_workbook(excelFile, data_only=False)
 # Get the needed sheets
 monthSheetData = wbData['Monthly']
 yearSheetData = wbData['Yearly']
+dataSetSheetData = wbData["Data Set"]
 
 monthSheetEq = wbEq["Monthly"]
 yearSheetEq = wbEq["Yearly"]
