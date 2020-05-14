@@ -1,6 +1,8 @@
 # Contains information and some helper functions that almost every file needs.
+
 import openpyxl as xl
 import tkinter as tk
+import createGUI
 
 # Helper Function
 # If key is not passed then the function returns the open row number
@@ -30,10 +32,13 @@ def getRowNum(sheet, startRow, startCol, key=None, month=None):
     # Used for the Data Set Check
     # Returns the row when the date is equal to the month (passed in as a number)
     else:
-        while ((sheet[startRow+1][startCol].value).month != month):
-            startRow += 1
-            if (startRow == 100):
-                break
+        try:
+            while ((sheet[startRow+1][startCol].value).month != month):
+                startRow += 1
+                if (startRow == 100):
+                    break
+        except:
+            createGUI.displayMessage("The data from the Add entry button was not saved correctly")
 
     return startRow
 
@@ -71,3 +76,15 @@ dataSetSheetData = wbData["Data Set"]
 monthSheetEq = wbEq["Monthly"]
 yearSheetEq = wbEq["Yearly"]
 dataSetSheetEq = wbEq["Data Set"]
+
+# Load in the different categories
+row = 3
+col = 2
+lastRow = getRowNum(monthSheetEq, row, 1)
+
+categoryList = []
+
+# Loops through the category names starting with the rent cell
+for x in range(lastRow - row):
+    categoryList.append(monthSheetData[row][1].value)
+    row += 1

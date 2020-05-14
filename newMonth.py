@@ -1,29 +1,37 @@
-# Handles all of the nessesary steps and functions need to reset the spreadsheet for a new month
+# Handles all of the necessary steps and functions need to reset the spreadsheet for a new month
 import info
 import createGUI
-import openpyxl as xl
 import newMonthCheck
 
 def new_month():
     # Copy the VALUES from the monthly Category Table to the corresponding table in Yearly
-    copySummaryTable(info.monthSheetData, info.yearSheetEq)
+    copySummaryTable(info.monthSheetData, info.yearSheetEq, info.categoryList)
 
     # Also copy the Total Spent, Total Besides P/R, and Net values from Monthly to Yearly
     copyTotalValues(info.monthSheetData, info.yearSheetData, info.yearSheetEq)
 
     # Update the Grocery and Gas tables by moving the equation to the next month and only
-    # # saving the values of the previous month.
-    updateGrocGasTables(info.monthSheetData, info.monthSheetEq)
+    # saving the values of the previous month.
+    try:
+        updateGrocGasTables(info.monthSheetData, info.monthSheetEq)
+    except:
+        createGUI.displayMessage("Groc/Gas tables were not updated correctly, look at current month and equations")
 
     # Get the data from the Entries table from Monthly, write that data to the 'Data Set'
     # sheet and then clear the Entries table
     updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
 
     # # Update the month in the BudgetGuiConfig file
-    updateMonth(info.months[info.months.index(info.month) + 1])
+    try:
+        updateMonth(info.months[info.months.index(info.month) + 1])
+    except:
+        createGUI.displayMessage("Month is December, check the current months")
 
     # Save only the EQUATIONS workbook file
-    info.wbEq.save(info.excelFile)
+    try:
+        info.wbEq.save(info.excelFile)
+    except:
+        createGUI.displayMessage("Close the excel file, check if it is saved correectly")
 
     # Perform all of the checks
     newMonthCheck.makeAllChecks()
@@ -31,50 +39,17 @@ def new_month():
     # Call the updateValues function to update the GUI once its complete
     createGUI.updateGUI()
 
-# Helper function that determines the yearly month starting cell by using month
-# and yearly_month_cells from info.py
-def getMonthStartCell(month=None):
-    if (month == None):
-        return info.yearly_month_cells.get(info.month)
-    else:
-        return info.yearly_month_cells.get(month)
-
-# Writes the newMonth to the config file and also updates the month from info.py
-def updateMonth(newMonth):
-    # Read everything from the text file
-    with open(r"BudgetGuiConfig.txt", 'r') as oldFile:
-        data = oldFile.readlines()
-
-    # Change the first line containing the month
-    data[0] = newMonth + '\n'
-
-    # Save the second line (the excel file name)
-    data[1] = info.excelFile
-
-    # Write back all of the data to config file
-    with open(r'BudgetGuiConfig.txt', 'w') as newFile:
-        newFile.writelines(data)
-
-    # Update program month
-    info.month = newMonth
-
-    # Write the new month to the monthly cell
-    info.monthSheetEq.cell(row = 23, column = 1).value = newMonth
-
 # Copy only the values from the summary table to the "Yearly" Sheet
-def copySummaryTable(monthSheetData, yearSheetEq):
-    # Starting at 'Rent' cell in amounts column of the category table
-    categoryList = []
-
-    # Find the last row in the monthly category table
+def copySummaryTable(monthSheetData, yearSheetEq, categoryList):
+    # Initialize some needed variables
     row = 3
-    lastRow = info.getRowNum(monthSheetData, row, 1)
+    amountsList = []
     monthCell = monthSheetData[row][2]
 
     # Loop down the amounts column, saving all of the numbers
-    for x in range(lastRow - row):
+    for l in range(len(categoryList)):
         # Clean values are not needed because excel needs to see the values as numbers not strings
-        categoryList.append(monthCell.value)
+        amountsList.append(monthCell.value)
         row += 1
         monthCell = monthSheetData[row][2]
 
@@ -83,8 +58,8 @@ def copySummaryTable(monthSheetData, yearSheetEq):
     row, col = monthCellList[0], monthCellList[1]
 
     # Write in the data
-    for y in categoryList:
-        yearSheetEq.cell(row = row, column = col).value = y
+    for amt in amountsList:
+        yearSheetEq.cell(row = row, column = col).value = amt
         row += 1
 
 # Copy Total Spent, Total(Besides R/P), and NET cells to the yearly sheet
@@ -173,3 +148,33 @@ def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
     for i in range(25, lastRow + 1):
         for j in range(1, 6):
             monthSheetEq.cell(row = i, column = j).value = None
+
+# Writes the newMonth to the config file and also updates the month from info.py
+def updateMonth(newMonth):
+    # Read everything from the text file
+    with open(r"BudgetGuiConfig.txt", 'r') as oldFile:
+        data = oldFile.readlines()
+
+    # Change the first line containing the month
+    data[0] = newMonth + '\n'
+
+    # Save the second line (the excel file name)
+    data[1] = info.excelFile
+
+    # Write back all of the data to config file
+    with open(r'BudgetGuiConfig.txt', 'w') as newFile:
+        newFile.writelines(data)
+
+    # Update program month
+    info.month = newMonth
+
+    # Write the new month to the monthly cell
+    info.monthSheetEq.cell(row = 23, column = 1).value = newMonth
+
+# Helper function that determines the yearly month starting cell by using month
+# and yearly_month_cells from info.py
+def getMonthStartCell(month=None):
+    if (month == None):
+        return info.yearly_month_cells.get(info.month)
+    else:
+        return info.yearly_month_cells.get(month)

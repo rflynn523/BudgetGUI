@@ -18,7 +18,8 @@ def create_GUI(sheet):
     # Labels for the first three (fixed) rows
     for x in range(len(textList)):
         # Actual label
-        tk.Label(info.window, text=textList[x], font="Calibri 12 bold").grid(row=x, column=0,columnspan=2, sticky=tk.W, padx=5, pady=5)
+        tk.Label(info.window, text=textList[x], font="Calibri 12 bold").grid(row=x, column=0,columnspan=2,
+                                                                             sticky=tk.W, padx=5, pady=5)
 
         text = clean_values(amountList[x])
         if(text[2] == "-"):
@@ -26,22 +27,26 @@ def create_GUI(sheet):
         else:
             color = colors[x]
 
-        tk.Label(info.window, text=text, font="Calibri 12", relief='solid', bg = color, width=20).grid(row=x, column=2, columnspan=2, sticky=tk.E, padx=5, pady=5)
+        # Add the amount
+        tk.Label(info.window, text=text, font="Calibri 12", relief='solid', bg = color,
+                 width=20).grid(row=x, column=2, columnspan=2, sticky=tk.E, padx=5, pady=5)
 
+    # Make the rest of the table for the non-fixed categories
     create_category_table(sheet)
 
 # Function that creates and displays all the categories and there current amounts.
 def create_category_table(sheet):
-    # Find the last row in the monthly category table
     row = 3
-    col = 2
-    lastRow = info.getRowNum(sheet, row, 1)
 
     # Loops through the category names
-    # Starts at the rent cell
-    for x in range(lastRow - row):
-        tk.Label(info.window, text=sheet[row][1].value, font='Calibri 12').grid(row=row, column=0, columnspan=2, sticky=tk.W, padx=5, pady=5)
-        tk.Label(info.window, text = clean_values(sheet[row][col]), font='Calibri 12', relief='groove', bg='cyan', width=20).grid(row=row, column=2, columnspan=2, sticky=tk.E, padx=5, pady=5)
+    for cat in info.categoryList:
+        # Create Label for the name
+        tk.Label(info.window, text=cat, font='Calibri 12').grid(row=row, column=0, columnspan=2, sticky=tk.W, padx=5, pady=5)
+
+        # Add the amount associated with that category
+        tk.Label(info.window, text = clean_values(sheet[row][2]), font='Calibri 12', relief='groove', bg='cyan',
+                 width=20).grid(row=row, column=2, columnspan=2, sticky=tk.E, padx=5, pady=5)
+
         row += 1
 
 # This function is used to add dollar signs to money amounts
@@ -95,3 +100,16 @@ def updateGUI():
 
     # Re-create the GUI
     create_GUI(newWbData['Monthly'])
+
+# Simply used to display error messages to the user
+def displayMessage(message):
+    errorWindow = tk.Toplevel(info.window)
+    errorWindow.geometry('+925+300')
+    errorWindow.title("Error Message")
+
+    tk.Label(errorWindow, text=message).grid(row=0, column=0, padx=5, pady=5)
+
+    tk.Button(errorWindow, text="Ok", font="Calibri 12 bold", relief='groove', bg="mediumseagreen",
+              activebackground="darkolivegreen", command=errorWindow.destroy).grid(row=10, column=0, columnspan=2,
+                                                                      sticky=tk.S + tk.W + tk.E, padx=5,
+                                                                      pady=5)
