@@ -1,7 +1,5 @@
 # BudgetGUI
-This Repository will hold all of the files needed to run the BudgetGUI program which interacts with an excel spreadsheet consisting of a monthly and yearly budget.
-
-The GUI displays all of the categories that the excel file is tracking along with what the budget is set at, the current spenfing money, and the average amount the user can spend each day to stay under budget. They can then do the following actions: 
+This Repository will hold all of the files needed to run the BudgetGUI program which interacts with an excel spreadsheet consisting of a monthly and yearly budget. The GUI displays all of the categories that the excel file is tracking along with what the budget is set at, the current spenfing money, and the average amount the user can spend each day to stay under budget. They can then do the following actions: 
 
   New Entry - The user can enter a new purchase by entering the date, item, vendor, amount and category. It will then be added to the excel               file.
   
