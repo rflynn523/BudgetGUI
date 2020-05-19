@@ -31,7 +31,7 @@ def new_month():
     try:
         info.wbEq.save(info.excelFile)
     except:
-        createGUI.displayMessage("Close the excel file, check if it is saved correectly")
+        createGUI.displayMessage("Close the excel file, check if it is saved correctly")
 
     # Perform all of the checks
     newMonthCheck.makeAllChecks()

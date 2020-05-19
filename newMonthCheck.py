@@ -163,12 +163,12 @@ def grocGasCheck(monthSheetEq):
     gasAvgData = monthSheetEq[current-1][14].value
 
     # The old cell with the equation should be overwritten by the value which is a float type
-    grocDataCheck = (type(grocTotalData) == float or type(grocAvgData) == float)
-    gasDataCheck = (type(gasTotalData) == float or type(gasAvgData) == float)
+    grocDataCheck = (type(grocTotalData) == float and type(grocAvgData) == float)
+    gasDataCheck = (type(gasTotalData) == float and type(gasAvgData) == float)
 
     # The new cell should now contain the equation
-    grocEquationCheck = ("=" in grocTotalEq or "=" in grocAvgEq)
-    gasEquationCheck = ("=" in gasTotalEq or "=" in gasAvgEq)
+    grocEquationCheck = (type(grocTotalEq) == str and type(grocAvgEq) == str)
+    gasEquationCheck = (type(gasTotalEq) == str and type(gasAvgEq) == str)
 
     addResult((grocDataCheck or gasDataCheck or grocEquationCheck or gasEquationCheck), 5)
 
