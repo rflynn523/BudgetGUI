@@ -10,13 +10,6 @@ def new_month():
     # Also copy the Total Spent, Total Besides P/R, and Net values from Monthly to Yearly
     copyTotalValues(info.monthSheetData, info.yearSheetData, info.yearSheetEq)
 
-    # Update the Grocery and Gas tables by moving the equation to the next month and only
-    # saving the values of the previous month.
-    try:
-        updateGrocGasTables(info.monthSheetData, info.monthSheetEq)
-    except:
-        createGUI.displayMessage("Groc/Gas tables were not updated correctly, look at current month and equations")
-
     # Get the data from the Entries table from Monthly, write that data to the 'Data Set'
     # sheet and then clear the Entries table
     updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
@@ -76,42 +69,6 @@ def copyTotalValues(monthSheetData, yearSheetData, yearSheetEq):
     yearSheetEq.cell(row=nextOpen, column=13).value = totalSpent
     yearSheetEq.cell(row=nextOpen, column=14).value = totBesidesRP
     yearSheetEq.cell(row=nextOpen, column=15).value = net
-
-# Copy the values in the groceries and gas tables into to the same cells so those months get saved.
-def updateGrocGasTables(monthSheetData, monthSheetEq):
-    # Saves the next open row in the Grocery and Gas tables
-    current = info.getRowNum(monthSheetData, 31, 10) - 1
-
-    # Get the values
-    grocTotalData = monthSheetData[current][9].value
-    grocAvgData = monthSheetData[current][10].value
-
-    # Get the equations
-    grocTotalEq = monthSheetEq[current][9].value
-    grocAvgEq = monthSheetEq[current][10].value
-
-    # Write the data into its cell
-    monthSheetEq.cell(row=current, column=10).value = grocTotalData
-    monthSheetEq.cell(row=current, column=11).value = grocAvgData
-
-    # Move the equation to the cell below
-    monthSheetEq.cell(row=current + 1, column=10).value = grocTotalEq
-    monthSheetEq.cell(row=current + 1, column=11).value = grocAvgEq
-
-    # Do the same thing for the gas table
-    gasTotalData = monthSheetData[current][13].value
-    gasAvgData = monthSheetData[current][14].value
-
-    gasTotalEq = monthSheetEq[current][13].value
-    gasAvgEq = monthSheetEq[current][14].value
-
-    # Write the data into its cell
-    monthSheetEq.cell(row=current, column=14).value = gasTotalData
-    monthSheetEq.cell(row=current, column=15).value = gasAvgData
-
-    # Move the equation to the cell below
-    monthSheetEq.cell(row=current + 1, column=14).value = gasTotalEq
-    monthSheetEq.cell(row=current + 1, column=15).value = gasAvgEq
 
 # Cut the data from the Monthly Entries table and paste it into the Data Set sheet
 def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):

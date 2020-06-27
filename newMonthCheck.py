@@ -7,7 +7,7 @@ import info, newMonth
 def makeAllChecks():
     # Current Checks that are going to run
     checkList = ["Monthly Amounts Table Reset", "Current Month Check on Monthly", "Amounts Entered into Yearly",
-                 "Totals entered into Yearly", "Category Totals reset on Monthly", "Groc and Gas Tables Updated",
+                 "Totals entered into Yearly", "Category Totals reset on Monthly",
                  "Entry Table Emptied", "Entries entered into Data Set"]
 
     # Add those labels to the new window
@@ -43,9 +43,6 @@ def makeAllChecks():
 
     # Check that the 'new' month cells are the actual equations
     monthlyTotalsReset(monthSheetEq)
-
-    # Check that the grocery and gas tables were updated correctly????
-    grocGasCheck(monthSheetEq)
 
     # Make sure the Entry table is empty
     emptyEntryTable(monthSheetData)
@@ -145,36 +142,9 @@ def monthlyTotalsReset(monthSheetEq):
 
     addResult(True, 4)
 
-# Chcek that the grocery and gas tables were updated correctly
-def grocGasCheck(monthSheetEq):
-    # Saves the next open row in the Grocery and Gas tables
-    current = info.getRowNum(monthSheetEq, 31, 10) - 1
-
-    # Get the Equations
-    grocTotalEq = monthSheetEq[current][9].value
-    grocAvgEq = monthSheetEq[current][10].value
-    gasTotalEq = monthSheetEq[current][13].value
-    gasAvgEq = monthSheetEq[current][14].value
-
-    # Get the Data
-    grocTotalData = monthSheetEq[current-1][9].value
-    grocAvgData = monthSheetEq[current-1][10].value
-    gasTotalData = monthSheetEq[current-1][13].value
-    gasAvgData = monthSheetEq[current-1][14].value
-
-    # The old cell with the equation should be overwritten by the value which is a float type
-    grocDataCheck = (type(grocTotalData) == float and type(grocAvgData) == float)
-    gasDataCheck = (type(gasTotalData) == float and type(gasAvgData) == float)
-
-    # The new cell should now contain the equation
-    grocEquationCheck = (type(grocTotalEq) == str and type(grocAvgEq) == str)
-    gasEquationCheck = (type(gasTotalEq) == str and type(gasAvgEq) == str)
-
-    addResult((grocDataCheck or gasDataCheck or grocEquationCheck or gasEquationCheck), 5)
-
 # Make sure the Entry table is empty
 def emptyEntryTable(monthSheetData):
-    addResult((info.getRowNum(monthSheetData, 25, 1) == 25), 6)
+    addResult((info.getRowNum(monthSheetData, 25, 1) == 25), 5)
 
  # Make sure the data was inserted into the Data Set sheet
 def dataSetEntered(dataSetSheetData, yearSheetData):
@@ -200,7 +170,7 @@ def dataSetEntered(dataSetSheetData, yearSheetData):
     row = 23 + (info.months.index(info.month) - 1)
     totalBesidesPR = yearSheetData.cell(row=row, column=14).value
 
-    addResult((round(sum,2) == totalBesidesPR), 7)
+    addResult((round(sum,2) == totalBesidesPR), 6)
 
 # Helper funciton that adds the results to the pop-up window
 def addResult(result, num):
