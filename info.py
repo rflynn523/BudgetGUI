@@ -3,6 +3,7 @@
 import openpyxl as xl
 import tkinter as tk
 import createGUI
+from openpyxl.styles import Font, Fill, PatternFill, Border, Side
 
 # Helper Function
 # If key is not passed then the function returns the open row number
@@ -38,7 +39,7 @@ def getRowNum(sheet, startRow, startCol, key=None, month=None):
                 if (startRow == 100):
                     break
         except:
-            createGUI.displayMessage("The data from the Add entry button was not saved correctly")
+            createGUI.displayMessage("StartRow error? info.py line 41")
 
     return startRow
 
@@ -54,6 +55,15 @@ config.close()
 # Formatting and other info
 accountingFormat = r'_("$"* #,##0.00_)_("$"* \(#,##0.00\)_("$"* "-"??_)_(@_)'
 dateFormat = 'dd-mmm'
+noFill = PatternFill(fill_type=None)
+
+side = Side(border_style=None)
+noBorder = Border(
+    left=side,
+    right=side,
+    top=side,
+    bottom=side,
+)
 
 # Create the dictionary to map months to cells in the form of:
 #  {"Month" : [row, col]}

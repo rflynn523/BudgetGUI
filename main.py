@@ -1,13 +1,20 @@
 # Calls the function that creates the GUI, sets up all of the button and has the mainloop
 # Also contains the open_excel() function
 
-import tkinter as tk
-import os
+try:
 
-import addEntry
-import newMonth
-import info
-import createGUI
+    import os
+    import tkinter as tk
+    import addEntry
+    import newMonth
+    import info
+    import createGUI
+    import updateCategories
+
+except Exception as e:
+    print('Can not import files:' + str(e))
+    input("Press Enter to exit!")
+    os.exit(0)
 
 # Note on the notation of retrieving values from excel
 # sheet[row][col] BUT COLUMN is zero indexed while ROW is NOT
@@ -37,8 +44,7 @@ tk.Button(info.window, text="Open Excel", font = "Calibri 12 bold", relief = 'gr
           activebackground = "darkolivegreen", command=open_excel).grid(row=12, column=2, sticky=tk.W, padx=5, pady=5)
 
 # Refresh Button
-tk.Button(info.window, text="Refresh", font = "Calibri 12 bold", relief = 'groove', bg = "mediumseagreen",
-          activebackground = "darkolivegreen", command=createGUI.updateGUI).grid(row=12, column=3, sticky=tk.W, padx=5, pady=5)
+tk.Button(info.window, text="Add Category", font = "Calibri 12 bold", relief = 'groove', bg = "mediumseagreen",
+          activebackground = "darkolivegreen", command=updateCategories.createUpdateWindow).grid(row=12, column=3, sticky=tk.W, padx=5, pady=5)
 
 info.window.mainloop()
-
