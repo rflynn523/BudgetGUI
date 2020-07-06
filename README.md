@@ -7,4 +7,4 @@ This Repository will hold all of the files needed to run the BudgetGUI program w
   
   - Open Excel - This simply closes the GUI window and opens up excel with the budget workbook.
   
-  - Refresh - Updates category values on the main GUI window. 
+  - Add Category - Lets the user input a new category to be track with the budget. Will insert this into the appropriate spots. 
