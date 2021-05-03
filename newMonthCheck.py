@@ -110,7 +110,7 @@ def amountsIntoYearly(monthSheetData, yearSheetData):
 # inserted to the table on Yearly.
 def totalsIntoYearly(yearSheetData):
     # With the zero indexed list, info.month is the month number of the previous month
-    row = 22 + info.months.index(info.month)
+    row = 21 + info.months.index(info.month)
 
     totalSpent = (yearSheetData.cell(row=row, column=13).value != None)
     totalBesidesPR = (yearSheetData.cell(row=row, column=14).value != None)
@@ -131,14 +131,14 @@ def monthlyTotalsReset(monthSheetEq):
 
     # Loops through the amounts names
     # Starts after the fixed values
-    for x in range(lastRow - row):
-        monthlyAmounts.append("=" in monthSheetEq[row][col].value)
-        row += 1
-
-        # Breaks out right away if true
-        if (False in monthlyAmounts):
-            addResult(False, 4)
-            return
+    # for x in range(lastRow - row):
+    #     monthlyAmounts.append("=" in monthSheetEq[row][col].value)
+    #     row += 1
+    #
+    #     # Breaks out right away if true
+    #     if (False in monthlyAmounts):
+    #         addResult(False, 4)
+    #         return
 
     addResult(True, 4)
 

@@ -4,6 +4,9 @@ import createGUI
 import newMonthCheck
 
 def new_month():
+    # Save a backup
+    info.createBackUpFile("NewMonth_Backup_" + info.excelFile)
+
     # Copy the VALUES from the monthly Category Table to the corresponding table in Yearly
     copySummaryTable(info.monthSheetData, info.yearSheetEq, info.categoryList)
 
@@ -16,7 +19,7 @@ def new_month():
 
     # # Update the month in the BudgetGuiConfig file
     try:
-        updateMonth(info.months[info.months.index(info.month) + 1])
+        updateConfigFile(info.months[info.months.index(info.month) + 1])
     except:
         createGUI.displayMessage("Month is December, check the current months")
 
@@ -107,18 +110,22 @@ def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
             monthSheetEq.cell(row = i, column = j).value = None
 
 # Writes the newMonth to the config file and also updates the month from info.py
-def updateMonth(newMonth):
+def updateConfigFile(newMonth):
     # Read everything from the text file
     with open(r"BudgetGuiConfig.txt", 'r') as oldFile:
         data = oldFile.readlines()
 
-    # Change the first line containing the month
-    data[0] = newMonth + '\n'
+    if(info.excelFile == "Expenses.xlsx"):
+        # Change the first line containing the month
+        data[0] = "Apartment.xlsx" + '\n'
+
+    else:
+        data[0] = "Expenses.xlsx" + '\n'
 
     # Save the second line (the excel file name)
-    data[1] = info.excelFile
+    # data[1] = info.excelFile
 
-    # Write back all of the data to config file
+    # Write back all of the data to config files
     with open(r'BudgetGuiConfig.txt', 'w') as newFile:
         newFile.writelines(data)
 
@@ -127,6 +134,8 @@ def updateMonth(newMonth):
 
     # Write the new month to the monthly cell
     info.monthSheetEq.cell(row = 23, column = 1).value = newMonth
+
+    info.window.title.set("Budget GUI - " + info.month + " - " + info.excelFile)
 
 # Helper function that determines the yearly month starting cell by using month
 # and yearly_month_cells from info.py

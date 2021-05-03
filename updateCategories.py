@@ -35,11 +35,14 @@ def createUpdateWindow():
 
 # Insert the new category into the correct places
 def insert(insertBefore):
+    # Save a backup
+    info.createBackUpFile("NewMonth_BackUp_" + info.excelFile);
+
     # Grab the user data
     categoryName = newNameEntry.get()
 
     # Find out how many rows are under the insertBefore row
-    catBelow =  len(info.categoryList) - (info.categoryList.index(insertBefore) + 1)
+    catBelow = len(info.categoryList) - (info.categoryList.index(insertBefore) + 1)
 
     # First handle the monthly categories down shift and insert on 'Monthly'
     shiftMonthlyCategories(catBelow, categoryName)
@@ -209,7 +212,7 @@ def shiftAllMonths(catBelow, categoryName):
 
 # Helper function that shifts the entire row of months down by the appropriate amount
 def shiftRowOfMonthsDown(leftMonth):
-
+    print(leftMonth)
     # Given rightMonth
     ind = info.months.index(leftMonth)
 
@@ -226,7 +229,7 @@ def shiftRowOfMonthsDown(leftMonth):
         shiftAmount = 2
     elif (leftMonth == "April"):
         shiftAmount = 1
-    elif (leftMonth == "Janurary"):
+    else: # (leftMonth == "Janurary"):
         return
 
     # Update the info start cells

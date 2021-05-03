@@ -43,13 +43,22 @@ def getRowNum(sheet, startRow, startCol, key=None, month=None):
 
     return startRow
 
+# Function to save a Back up file before the script makes changes to the main file
+def createBackUpFile(newFileName):
+    wbEq.save(newFileName)
+
+def getCurrentMonth():
+    pass
+    # Read the current month from the excel file cell
+
 # Window variable
 window = tk.Tk()
 
 # Get info from the config file
+
+# Won't need the Config file when I implement the switch file function
 config = open(r"BudgetGuiConfig.txt", "r")
-month = str(config.readline()).strip('\n')
-excelFile = config.readline()
+excelFile = str(config.readline()).strip('\n')
 config.close()
 
 # Formatting and other info
@@ -65,13 +74,25 @@ noBorder = Border(
     bottom=side,
 )
 
+months = ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+# Cells correspond to the above months and contain the first cell under 'Amount' on the Yearly sheet
+# Updated the cells 5/2
+ApartmentCells = [[5,3], [5,6], [5,9], [17,3], [17,6], [17,9], [29,3], [29,6], [29,9], [41,3], [41,6], [41,9]]
+ExpenseCells = [[4,3], [4,6], [4,9], [21,3], [21,6], [21,9], [36,3], [36,6], [36,9], [52,3], [52,6], [52,9]]
+
+# The two main excel sheets are Apartment and Expenses
+# This handles the different yearly starting cells
+# Apartment Worksheet
+if(excelFile.strip('.xlsx') == "Apartment"):
+    cells = ApartmentCells
+
+# Expenses Worksheet
+else:
+    cells = ExpenseCells
+
 # Create the dictionary to map months to cells in the form of:
 #  {"Month" : [row, col]}
-months = ["Janurary", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-
-# Cells correspond to the above months and contain the first cell under 'Amount'
-cells = [[5,3], [5,6], [5,9], [17,3], [17,6], [17,9], [29,3], [29,6], [29,9], [41,3], [41,6], [41,9]]
-
 yearly_month_cells = {k:v for k,v in zip(months, cells)}
 
 # Load the workbooks
@@ -87,14 +108,16 @@ monthSheetEq = wbEq["Monthly"]
 yearSheetEq = wbEq["Yearly"]
 dataSetSheetEq = wbEq["Data Set"]
 
+month = monthSheetData[23][0].value
+
+categoryList = []
+
+# Loops through the category names starting with the rent cell
 # Load in the different categories
 row = 3
 col = 2
 lastRow = getRowNum(monthSheetEq, row, 1)
 
-categoryList = []
-
-# Loops through the category names starting with the rent cell
 for x in range(lastRow - row):
     categoryList.append(monthSheetData[row][1].value)
     row += 1
