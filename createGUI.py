@@ -4,8 +4,8 @@ import info
 import openpyxl as xl
 
 # Create the GUI by reading from the monthSheetData that is passed from main.py
-def create_GUI(sheet):
-    budgetCell = sheet[16][0]
+def create_GUI(sheet, categoryList=None):
+    budgetCell = sheet[18][0]
     spendingCell = sheet[info.getRowNum(sheet, 2, 1, "Spending Money")][2]
     perDayCell = sheet[19][3]
 
@@ -16,38 +16,46 @@ def create_GUI(sheet):
     colors = ["yellow", 'lightgreen', 'seagreen']
 
     # Labels for the first three (fixed) rows
-    for x in range(len(textList)):
+    for x in range(1, len(textList)+1):
         # Actual label
-        tk.Label(info.window, text=textList[x], font="Calibri 12 bold").grid(row=x, column=0,columnspan=2,
+        tk.Label(info.window, text=textList[x-1], font="Calibri 12 bold").grid(row=x, column=0,columnspan=2,
                                                                              sticky=tk.W, padx=5, pady=5)
 
-        text = clean_values(amountList[x])
+        text = clean_values(amountList[x-1])
         if(text[2] == "-"):
             color = "orangered"
         else:
-            color = colors[x]
+            color = colors[x-1]
 
         # Add the amount
         tk.Label(info.window, text=text, font="Calibri 12", relief='solid', bg = color,
                  width=20).grid(row=x, column=2, columnspan=2, sticky=tk.E, padx=5, pady=5)
 
     # Make the rest of the table for the non-fixed categories
-    create_category_table(sheet)
+    numRows = create_category_table(sheet, categoryList)
+
+    return numRows
 
 # Function that creates and displays all the categories and there current amounts.
-def create_category_table(sheet):
-    row = 3
+def create_category_table(sheet, categoryList=None):
+    row = 4
+
+    if(categoryList == None):
+        categoryList = info.categoryList
 
     # Loops through the category names
-    for cat in info.categoryList:
+    for cat in categoryList:
         # Create Label for the name
         tk.Label(info.window, text=cat, font='Calibri 12').grid(row=row, column=0, columnspan=2, sticky=tk.W, padx=5, pady=5)
 
         # Add the amount associated with that category
-        tk.Label(info.window, text = clean_values(sheet[row][2]), font='Calibri 12', relief='groove', bg='cyan',
+        tk.Label(info.window, text = clean_values(sheet[row-1][2]), font='Calibri 12', relief='groove', bg='cyan',
                  width=20).grid(row=row, column=2, columnspan=2, sticky=tk.E, padx=5, pady=5)
 
         row += 1
+
+    # Return number of rows to format buttons correctly
+    return row
 
 # This function is used to add dollar signs to money amounts
 # along with rounding to two decimal places
@@ -96,10 +104,21 @@ def updateGUI():
     newWbData = xl.load_workbook(info.excelFile, data_only=True)
 
     # Update the Display Month
-    info.window.title("Budget GUI - " + info.month)
+    info.window.title("Budget GUI - " + info.month + " " + info.excelFile)
+
+    # Loops through the category names starting with the rent cell
+    categoryList = []
+    # Load in the different categories
+    row = 3
+    col = 2
+    lastRow = info.getRowNum(newWbData["Monthly"], row, 1)
+
+    for x in range(lastRow - row):
+        categoryList.append(newWbData["Monthly"][row][1].value)
+        row += 1
 
     # Re-create the GUI
-    create_GUI(newWbData['Monthly'])
+    create_GUI(newWbData['Monthly'], categoryList)
 
 # Simply used to display error messages to the user
 def displayMessage(message):
@@ -113,3 +132,4 @@ def displayMessage(message):
               activebackground="darkolivegreen", command=errorWindow.destroy).grid(row=10, column=0, columnspan=2,
                                                                       sticky=tk.S + tk.W + tk.E, padx=5,
                                                                       pady=5)
+
