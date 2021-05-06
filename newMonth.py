@@ -10,14 +10,14 @@ def new_month():
     # Copy the VALUES from the monthly Category Table to the corresponding table in Yearly
     copySummaryTable(info.monthSheetData, info.yearSheetEq, info.categoryList)
 
-    # Also copy the Total Spent, Total Besides P/R, and Net values from Monthly to Yearly
+    # Also copy the Total Spent, and Net values from Monthly to Yearly
     copyTotalValues(info.monthSheetData, info.yearSheetData, info.yearSheetEq)
 
     # Get the data from the Entries table from Monthly, write that data to the 'Data Set'
     # sheet and then clear the Entries table
     updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
 
-    # # Update the month in the BudgetGuiConfig file
+    # Update the month in the BudgetGuiConfig file
     try:
         updateConfigFile(info.months[info.months.index(info.month) + 1])
     except:
@@ -62,7 +62,6 @@ def copySummaryTable(monthSheetData, yearSheetEq, categoryList):
 def copyTotalValues(monthSheetData, yearSheetData, yearSheetEq):
     # Get the data from the DATA workbook
     totalSpent = monthSheetData[info.getRowNum(monthSheetData, 2, 1, "Total")][2].value
-    totBesidesRP = monthSheetData[info.getRowNum(monthSheetData, 2, 1, "Total (Besides R/P)")][2].value
     net = monthSheetData[info.getRowNum(monthSheetData, 2, 1, "Spending Money")][2].value
 
     # Find the next open row in the yearly table
@@ -70,8 +69,7 @@ def copyTotalValues(monthSheetData, yearSheetData, yearSheetEq):
 
     # Writing data to EQUATION file
     yearSheetEq.cell(row=nextOpen, column=13).value = totalSpent
-    yearSheetEq.cell(row=nextOpen, column=14).value = totBesidesRP
-    yearSheetEq.cell(row=nextOpen, column=15).value = net
+    yearSheetEq.cell(row=nextOpen, column=14).value = net
 
 # Cut the data from the Monthly Entries table and paste it into the Data Set sheet
 def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
@@ -109,6 +107,9 @@ def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
         for j in range(1, 6):
             monthSheetEq.cell(row = i, column = j).value = None
 
+    # Save the number of entries for checking purposes
+    info.numEntries = (lastRow+1) - 25
+
 # Writes the newMonth to the config file and also updates the month from info.py
 def updateConfigFile(newMonth):
     # Read everything from the text file
@@ -116,14 +117,10 @@ def updateConfigFile(newMonth):
         data = oldFile.readlines()
 
     if(info.excelFile == "Expenses.xlsx"):
-        # Change the first line containing the month
         data[0] = "Apartment.xlsx" + '\n'
 
     else:
         data[0] = "Expenses.xlsx" + '\n'
-
-    # Save the second line (the excel file name)
-    # data[1] = info.excelFile
 
     # Write back all of the data to config files
     with open(r'BudgetGuiConfig.txt', 'w') as newFile:

@@ -55,8 +55,6 @@ def getCurrentMonth():
 window = tk.Tk()
 
 # Get info from the config file
-
-# Won't need the Config file when I implement the switch file function
 config = open(r"BudgetGuiConfig.txt", "r")
 excelFile = str(config.readline()).strip('\n')
 config.close()
@@ -77,7 +75,7 @@ noBorder = Border(
 months = ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 # Cells correspond to the above months and contain the first cell under 'Amount' on the Yearly sheet
-# Updated the cells 5/2
+# Updated the cells on 5/2/21
 ApartmentCells = [[5,3], [5,6], [5,9], [17,3], [17,6], [17,9], [29,3], [29,6], [29,9], [41,3], [41,6], [41,9]]
 ExpenseCells = [[4,3], [4,6], [4,9], [21,3], [21,6], [21,9], [36,3], [36,6], [36,9], [52,3], [52,6], [52,9]]
 
@@ -108,9 +106,11 @@ monthSheetEq = wbEq["Monthly"]
 yearSheetEq = wbEq["Yearly"]
 dataSetSheetEq = wbEq["Data Set"]
 
+# Initialize these variables to be used later
 month = monthSheetData[23][0].value
 
 categoryList = []
+numEntries = 0
 
 # Loops through the category names starting with the rent cell
 # Load in the different categories

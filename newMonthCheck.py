@@ -37,7 +37,7 @@ def makeAllChecks():
     # Check that the amounts were entered into the correct month on Yearly
     amountsIntoYearly(monthSheetData, yearSheetData)
 
-    # Check that the 'old' months Total Spent, Total(Besides R/P), and NET values are
+    # Check that the 'old' months Total Spent, and NET values are
     # inserted to the table on Yearly.
     totalsIntoYearly(yearSheetData)
 
@@ -55,23 +55,19 @@ def makeAllChecks():
 
 # Check that the amounts table on monthly is 0 for non fixed categories
 def monthlyTableReset(monthSheetData):
-    row = 5
     col = 2
-    # Find the last row in the monthly category table
-    lastRow = info.getRowNum(monthSheetData, row, 1)
-    monthlyAmounts = []
 
-    # Loops through the amounts names
-    # Starts after the fixed values
-    for x in range(lastRow - row):
-        monthlyAmounts.append(monthSheetData[row][col].value == None)
-        row += 1
+    # List of row numbers that contain equation based totals
+    equationCellRows = [8, 10, 11, 12, 14, 15]
 
-    # All values should be None for each category which
-    if(False in monthlyAmounts):
-        addResult(False, 0)
-    else:
-        addResult(True, 0)
+    # Check each cell to see if the data is None/0 mean it was reset correctly
+    for cellRow in equationCellRows:
+        if(monthSheetData[cellRow][col].value != None):
+            addResult(False, 0)
+            return
+
+    # If you make it through the for loop then they are all good
+    addResult(True, 0)
 
 # Check that the correct month is displayed on Monthly
 def currentMonthCheck(monthSheetData):
@@ -106,19 +102,16 @@ def amountsIntoYearly(monthSheetData, yearSheetData):
 
     addResult(True, 2)
 
-# Check that the 'old' months Total Spent, Total(Besides R/P), and NET values are
+# Check that the 'old' months Total Spent, and NET values are
 # inserted to the table on Yearly.
 def totalsIntoYearly(yearSheetData):
     # With the zero indexed list, info.month is the month number of the previous month
     row = 21 + info.months.index(info.month)
 
     totalSpent = (yearSheetData.cell(row=row, column=13).value != None)
-    totalBesidesPR = (yearSheetData.cell(row=row, column=14).value != None)
-    net = (yearSheetData.cell(row=row, column=15).value != None)
+    net = (yearSheetData.cell(row=row, column=14).value != None)
 
-    addResult((totalSpent and totalBesidesPR and net), 3)
-
-    # Maybe check that they are reset on monthly too?
+    addResult((totalSpent and net), 3)
 
 # Check that the 'new' month cells are the actual equations
 def monthlyTotalsReset(monthSheetEq):
@@ -127,18 +120,14 @@ def monthlyTotalsReset(monthSheetEq):
     col = 2
     lastRow = info.getRowNum(monthSheetEq, row, 1)
 
-    monthlyAmounts = []
+    # List of row numbers that contain equation based totals
+    equationCellRows = [8, 10, 11, 12, 14, 15]
 
-    # Loops through the amounts names
-    # Starts after the fixed values
-    # for x in range(lastRow - row):
-    #     monthlyAmounts.append("=" in monthSheetEq[row][col].value)
-    #     row += 1
-    #
-    #     # Breaks out right away if true
-    #     if (False in monthlyAmounts):
-    #         addResult(False, 4)
-    #         return
+    # Check each cell to see if the data is None/0 mean it was reset correctly
+    for cellRow in equationCellRows:
+        if(monthSheetEq[cellRow][col].value[0] != "="):
+            addResult(False, 4)
+            return
 
     addResult(True, 4)
 
@@ -152,25 +141,14 @@ def dataSetEntered(dataSetSheetData, yearSheetData):
     if (info.month == "January"):
         firstRow = info.getRowNum(dataSetSheetData, 3, 3, month=12) + 1
     else:
-        firstRow = info.getRowNum(dataSetSheetData, 3, 4, month=info.months.index(info.month)) + 1
+        firstRow = info.getRowNum(dataSetSheetData, 3, 4, month=(info.months.index(info.month)) + 1)
 
     # Get the last row number
     lastRow = info.getRowNum(dataSetSheetData, firstRow, 4) - 1
 
-    # Add up the total from each entry
-    sum = 0
-    num = lastRow - firstRow
-    for x in range(num+1):
-        sum += dataSetSheetData.cell(row=firstRow, column = 8).value
-        firstRow += 1
-
-    # Find the previous Total (Besides R/P)
-    # prevMonth = info.months[info.months.index(info.month) - 1]
-
-    row = 23 + (info.months.index(info.month) - 1)
-    totalBesidesPR = yearSheetData.cell(row=row, column=14).value
-
-    addResult((round(sum,2) == totalBesidesPR), 6)
+    # Simply check if the number of rows in Data Set with the current month
+    # match the number of entries that was saved while clearing the entries table
+    addResult((lastRow - firstRow == info.numEntries), 6)
 
 # Helper funciton that adds the results to the pop-up window
 def addResult(result, num):
