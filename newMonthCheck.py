@@ -121,10 +121,22 @@ def monthlyTotalsReset(monthSheetEq):
     lastRow = info.getRowNum(monthSheetEq, row, 1)
 
     # List of row numbers that contain equation based totals
-    equationCellRows = [8, 10, 11, 12, 14, 15]
+    equationCellRows_Expenses = [3, 6, 7, 8, 9, 10, 11, 12, 14, 15]
+    equationCellRows_Apartment = [8, 9]
 
+    print(info.isApartment)
+
+    # Check to see which file si loaded bc each file has diffrent rows to check
+    if(info.isApartment == True):
+        equationCellRows = equationCellRows_Apartment
+    else:
+        equationCellRows = equationCellRows_Expenses
+
+    print(equationCellRows)
+    
     # Check each cell to see if the data is None/0 mean it was reset correctly
     for cellRow in equationCellRows:
+        print(monthSheetEq[cellRow][col].value)
         if(monthSheetEq[cellRow][col].value[0] != "="):
             addResult(False, 4)
             return

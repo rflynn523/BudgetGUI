@@ -77,12 +77,16 @@ months = ["January", "Feburary", "March", "April", "May", "June", "July", "Augus
 # Cells correspond to the above months and contain the first cell under 'Amount' on the Yearly sheet
 # Updated the cells on 5/2/21
 ApartmentCells = [[5,3], [5,6], [5,9], [17,3], [17,6], [17,9], [29,3], [29,6], [29,9], [41,3], [41,6], [41,9]]
-ExpenseCells = [[4,3], [4,6], [4,9], [21,3], [21,6], [21,9], [36,3], [36,6], [36,9], [52,3], [52,6], [52,9]]
+ExpenseCells = [[5,3], [5,6], [5,9], [21,3], [21,6], [21,9], [37,3], [37,6], [37,9], [53,3], [53,6], [53,9]]
+
+# Assume that the file is the Expenses
+isApartment = False
 
 # The two main excel sheets are Apartment and Expenses
 # This handles the different yearly starting cells
 # Apartment Worksheet
-if(excelFile.strip('.xlsx') == "Apartment"):
+if(excelFile.strip('.xlsx') == "Apartment" or excelFile.strip('.xlsx') == "NewMonth_Backup_Apartment"):
+    isApartment = True
     cells = ApartmentCells
 
 # Expenses Worksheet

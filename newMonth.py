@@ -18,10 +18,10 @@ def new_month():
     updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
 
     # Update the month in the BudgetGuiConfig file
-    try:
-        updateConfigFile(info.months[info.months.index(info.month) + 1])
-    except:
-        createGUI.displayMessage("Month is December, check the current months")
+    # try:
+    updateConfigFile(info.months[info.months.index(info.month) + 1])
+    # except:
+        # createGUI.displayMessage("Month is December, check the current months")
 
     # Save only the EQUATIONS workbook file
     try:
@@ -132,7 +132,7 @@ def updateConfigFile(newMonth):
     # Write the new month to the monthly cell
     info.monthSheetEq.cell(row = 23, column = 1).value = newMonth
 
-    info.window.title.set("Budget GUI - " + info.month + " - " + info.excelFile)
+    info.window.title("Budget GUI - " + info.month + " - " + info.excelFile)
 
 # Helper function that determines the yearly month starting cell by using month
 # and yearly_month_cells from info.py
