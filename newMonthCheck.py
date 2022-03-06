@@ -42,7 +42,7 @@ def makeAllChecks():
     totalsIntoYearly(yearSheetData)
 
     # Check that the 'new' month cells are the actual equations
-    monthlyTotalsReset(monthSheetEq)
+    # monthlyTotalsReset(monthSheetEq)
 
     # Make sure the Entry table is empty
     emptyEntryTable(monthSheetData)

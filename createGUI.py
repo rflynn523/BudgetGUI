@@ -43,16 +43,22 @@ def create_category_table(sheet, categoryList=None):
     if(categoryList == None):
         categoryList = info.categoryList
 
+    allLabels = []
+
     # Loops through the category names
     for cat in categoryList:
         # Create Label for the name
-        tk.Label(info.window, text=cat, font='Calibri 12').grid(row=row, column=0, columnspan=2, sticky=tk.W, padx=5, pady=5)
+        nameLabel = tk.Label(info.window, text=cat, font='Calibri 12')
+        nameLabel.grid(row=row, column=0, columnspan=2, sticky=tk.W, padx=5, pady=5)
 
         # Add the amount associated with that category
-        tk.Label(info.window, text = clean_values(sheet[row-1][2]), font='Calibri 12', relief='groove', bg='cyan',
-                 width=20).grid(row=row, column=2, columnspan=2, sticky=tk.E, padx=5, pady=5)
+        amountLabel = tk.Label(info.window, text = clean_values(sheet[row-1][2]), font='Calibri 12', relief='groove', bg='cyan',
+                 width=20)
+        amountLabel.grid(row=row, column=2, columnspan=2, sticky=tk.E, padx=5, pady=5)
 
         row += 1
+        allLabels.append(nameLabel)
+        allLabels.append(amountLabel)
 
     # Return number of rows to format buttons correctly
     return row
@@ -100,6 +106,7 @@ def clean_values(cell):
 
 # Updates the main GUI values
 def updateGUI():
+
     # Re-load the workbook
     newWbData = xl.load_workbook(info.excelFile, data_only=True)
 

@@ -18,10 +18,11 @@ def new_month():
     updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
 
     # Update the month in the BudgetGuiConfig file
-    # try:
-    updateConfigFile(info.months[info.months.index(info.month) + 1])
-    # except:
-        # createGUI.displayMessage("Month is December, check the current months")
+    if(info.month == "December"):
+        updateConfigFile(info.months[0])
+
+    else: 
+        updateConfigFile(info.months[info.months.index(info.month) + 1])
 
     # Save only the EQUATIONS workbook file
     try:
@@ -38,24 +39,71 @@ def new_month():
 # Copy only the values from the summary table to the "Yearly" Sheet
 def copySummaryTable(monthSheetData, yearSheetEq, categoryList):
     # Initialize some needed variables
-    row = 3
+    row = 2
+    namesList = []
     amountsList = []
-    monthCell = monthSheetData[row][2]
+
+    nameMonthCell = monthSheetData[row][1]
+    amountMonthCell = monthSheetData[row][2]
 
     # Loop down the amounts column, saving all of the numbers
-    for l in range(len(categoryList)):
+    for l in range(len(categoryList) + 1):
         # Clean values are not needed because excel needs to see the values as numbers not strings
-        amountsList.append(monthCell.value)
+
+        namesList.append(nameMonthCell.value)
+        amountsList.append(amountMonthCell.value)
+
         row += 1
-        monthCell = monthSheetData[row][2]
+
+        nameMonthCell = monthSheetData[row][1]
+        amountMonthCell = monthSheetData[row][2]
+
 
     # Write to the yearly sheet of the EQUATIONS file for the current month according to the config file
     monthCellList = getMonthStartCell()
-    row, col = monthCellList[0], monthCellList[1]
+    startRow, col = monthCellList[0], monthCellList[1]
+
+    row = startRow
+
+    # Write in the Month name
+    monthCell = yearSheetEq[row - 1][col - 2]
+
+    monthCell.value = info.month
+    monthCell.fill = info.greenFill
+    monthCell.font = info.yearlyMonth
+
+    # Write in the category names
+    for name in namesList:
+        currentCell = yearSheetEq[row][col-2]
+
+        # Specific formats for the column title
+        if name == "Category":
+            currentCell.font = info.boldFont
+
+        currentCell.value = name
+        currentCell.fill = info.lightGreenFill
+        currentCell.border = info.allBorders
+
+        row += 1
+
+    # Reset the row
+    row = startRow
 
     # Write in the data
     for amt in amountsList:
-        yearSheetEq.cell(row = row, column = col).value = amt
+        currentCell = yearSheetEq[row][col-1]
+
+        # Specific formats for the column title
+        if amt == "Amount":
+            currentCell.font = info.boldFont
+
+        else:
+            currentCell.number_format = info.accountingFormat
+
+        currentCell.value = amt
+        currentCell.fill = info.lightGreenFill
+        currentCell.border = info.allBorders
+
         row += 1
 
 # Copy Total Spent, Total(Besides R/P), and NET cells to the yearly sheet
@@ -104,7 +152,7 @@ def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
 
     # Clear the entries table from the "Monthly" sheet
     for i in range(25, lastRow + 1):
-        for j in range(1, 6):
+        for j in range(1, 7):
             monthSheetEq.cell(row = i, column = j).value = None
 
     # Save the number of entries for checking purposes
@@ -115,12 +163,6 @@ def updateConfigFile(newMonth):
     # Read everything from the text file
     with open(r"BudgetGuiConfig.txt", 'r') as oldFile:
         data = oldFile.readlines()
-
-    if(info.excelFile == "Expenses.xlsx"):
-        data[0] = "Apartment.xlsx" + '\n'
-
-    else:
-        data[0] = "Expenses.xlsx" + '\n'
 
     # Write back all of the data to config files
     with open(r'BudgetGuiConfig.txt', 'w') as newFile:

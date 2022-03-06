@@ -2,6 +2,9 @@
 
 import openpyxl as xl
 import tkinter as tk
+
+from tkinter import filedialog as fd
+
 import createGUI
 from openpyxl.styles import Font, Fill, PatternFill, Border, Side
 
@@ -51,13 +54,26 @@ def getCurrentMonth():
     pass
     # Read the current month from the excel file cell
 
+# Function that opens the file dialog box so you can select the Excel file
+def select_file():
+    fileTypes = (('excel files', '*.xlsx'), ('All files', '*.*'))
+
+    fileName = fd.askopenfilename(
+        title = 'Select Excel file',
+        initialdir = 'C:/Users/rflyn/Desktop/BudgetGUI/',
+        filetypes = fileTypes
+    )
+
+    print(fileName)
+
+    fileNameStripped = fileName.split("/")
+    return fileNameStripped[-1]
+
+
 # Window variable
 window = tk.Tk()
 
-# Get info from the config file
-config = open(r"BudgetGuiConfig.txt", "r")
-excelFile = str(config.readline()).strip('\n')
-config.close()
+excelFile = select_file()
 
 # Formatting and other info
 accountingFormat = r'_("$"* #,##0.00_)_("$"* \(#,##0.00\)_("$"* "-"??_)_(@_)'
@@ -72,7 +88,28 @@ noBorder = Border(
     bottom=side,
 )
 
-months = ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+thin = Side(border_style='thin')
+allBorders = Border(
+    left=thin,
+    right=thin,
+    top=thin,
+    bottom=thin,
+)
+ 
+lightGreenFill = PatternFill(fill_type='solid',
+                 start_color='C6E0B4',
+                 end_color='C6E0B4')
+                 
+
+greenFill = PatternFill(fill_type='solid',
+                 start_color='00B050',
+                 end_color='00B050')
+
+yearlyMonth = Font(name="Arial Black", bold = True)
+
+boldFont = Font(bold = True)
+
+months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 # Cells correspond to the above months and contain the first cell under 'Amount' on the Yearly sheet
 # Updated the cells on 5/2/21
@@ -85,12 +122,13 @@ isApartment = False
 # The two main excel sheets are Apartment and Expenses
 # This handles the different yearly starting cells
 # Apartment Worksheet
-if(excelFile.strip('.xlsx') == "Apartment" or excelFile.strip('.xlsx') == "NewMonth_Backup_Apartment"):
+if(excelFile.strip('.xlsx') == "Apartment" or excelFile.strip('.xlsx') == "NewMonth_Backup_Apartment" or excelFile.strip('.xlsx') == "Test_Apartment"):
     isApartment = True
-    cells = ApartmentCells
+    cells = ApartmentCells 
 
 # Expenses Worksheet
 else:
+    print("ASSUMING ADRI YEARLY CELLS ARE THE SAME AS MINE")
     cells = ExpenseCells
 
 # Create the dictionary to map months to cells in the form of:

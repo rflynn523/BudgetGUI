@@ -5,6 +5,7 @@ try:
 
     import os
     import tkinter as tk
+
     import addEntry
     import newMonth
     import info
@@ -26,27 +27,6 @@ def open_excel():
     os.startfile(info.excelFile)
     info.window.destroy()
 
-# Started working on a button to switch between the two files
-# def switchFile():
-#     # Switch the excel file by updating the excel file variable
-#     if (info.excelFile == "TestBudget1.xlsx"):
-#         info.excelFile = "TestBudget2.xlsx"
-#
-#     else:
-#         info.excelFile = "TestBudget1.xlsx"
-#
-#     print("new file = " + info.excelFile)
-#
-#     # Reload the work books
-#     info.wbData = info.xl.load_workbook(info.excelFile, data_only=True)
-#     info.wbEq = info.xl.load_workbook(info.excelFile, data_only=False)
-#
-#     switchButton['text'] = info.excelFile
-#
-#     #   Call the updateGUI in the createGUI file
-#     createGUI.updateGUI()
-#
-#     #   info.month = info.getCurrentMonth()
 
 # Set up and display GUI
 info.window.title("Budget GUI - " + info.month + " - " + info.excelFile)
@@ -70,11 +50,5 @@ tk.Button(info.window, text="Open Excel", font = "Calibri 12 bold", relief = 'gr
 # Refresh Button
 tk.Button(info.window, text="Add Category", font = "Calibri 12 bold", relief = 'groove', bg = "mediumseagreen",
           activebackground = "darkolivegreen", command=updateCategories.createUpdateWindow).grid(row=numRows, column=3, sticky=tk.W, padx=5, pady=5)
-
-# Started working on a button to switch between the two files
-# Switch between the two files button
-# switchButton = tk.Button(info.window, text=info.excelFile, font = "Calibri 12 bold", relief = 'groove', bg = "azure",
-#           activebackground = "gray65" , command=switchFile)
-# switchButton.grid(row=0, column=0, columnspan=4, sticky=tk.W+tk.E, padx=7, pady=7)
 
 info.window.mainloop()
