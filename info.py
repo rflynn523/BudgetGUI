@@ -16,7 +16,7 @@ def getRowNum(sheet, startRow, startCol, key=None, month=None):
     if(key == None and month==None):
         while(sheet[startRow][startCol].value != None):
             startRow += 1
-            if(startRow == 100):
+            if(startRow == 2000):
                 break
 
     # Return the row where the cell is equal to the key
@@ -25,12 +25,12 @@ def getRowNum(sheet, startRow, startCol, key=None, month=None):
         if(type(key) == str):
             while (str(sheet[startRow][startCol].value) != key):
                 startRow += 1
-                if (startRow == 100):
+                if (startRow == 2000):
                     break
         else:
             while (sheet[startRow][startCol].value != key):
                 startRow += 1
-                if (startRow == 100):
+                if (startRow == 2000):
                     break
 
     # Used for the Data Set Check

@@ -10,8 +10,8 @@ def new_month():
     # Copy the VALUES from the monthly Category Table to the corresponding table in Yearly
     copySummaryTable(info.monthSheetData, info.yearSheetEq, info.categoryList)
 
-    # # Also copy the Total Spent, and Net values from Monthly to Yearly
-    # copyTotalValues(info.monthSheetData, info.yearSheetData, info.yearSheetEq)
+    # Also copy the Total Spent, and Net values from Monthly to Yearly
+    copyTotalValues(info.monthSheetData, info.yearSheetData, info.yearSheetEq)
 
     # # Get the data from the Entries table from Monthly, write that data to the 'Data Set'
     # # sheet and then clear the Entries table
@@ -58,18 +58,11 @@ def copySummaryTable(monthSheetData, yearSheetEq, categoryList):
         nameMonthCell = monthSheetData[row][1]
         amountMonthCell = monthSheetData[row][2]
 
-
     # Get the next open row in the column of months
     # Always start the search at row 23 and column C
     nextOpenRow = info.getRowNum(yearSheetEq, 23, 2)
-    print(nextOpenRow)
 
     monthTitleCell = nextOpenRow
-
-    # Skip 2 rows unless it is the first row
-    if nextOpenRow != 23:
-        monthTitleCell = nextOpenRow + 2
-    
     categoryColumn = 2
     amountColumn = 3
     
@@ -112,11 +105,11 @@ def copyTotalValues(monthSheetData, yearSheetData, yearSheetEq):
     net = monthSheetData[info.getRowNum(monthSheetData, 2, 1, "Spending Money")][2].value
 
     # Find the next open row in the yearly table
-    nextOpen = info.getRowNum(yearSheetData, 22, 12)
+    nextOpenRow = info.getRowNum(yearSheetData, 4, 3)
 
     # Writing data to EQUATION file
-    yearSheetEq.cell(row=nextOpen, column=13).value = totalSpent
-    yearSheetEq.cell(row=nextOpen, column=14).value = net
+    yearSheetEq.cell(row=nextOpenRow, column=4).value = totalSpent
+    yearSheetEq.cell(row=nextOpenRow, column=5).value = net
 
 # Cut the data from the Monthly Entries table and paste it into the Data Set sheet
 def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
