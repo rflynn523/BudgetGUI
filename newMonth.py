@@ -10,19 +10,19 @@ def new_month():
     # Copy the VALUES from the monthly Category Table to the corresponding table in Yearly
     copySummaryTable(info.monthSheetData, info.yearSheetEq, info.categoryList)
 
-    # Also copy the Total Spent, and Net values from Monthly to Yearly
-    copyTotalValues(info.monthSheetData, info.yearSheetData, info.yearSheetEq)
+    # # Also copy the Total Spent, and Net values from Monthly to Yearly
+    # copyTotalValues(info.monthSheetData, info.yearSheetData, info.yearSheetEq)
 
-    # Get the data from the Entries table from Monthly, write that data to the 'Data Set'
-    # sheet and then clear the Entries table
-    updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
+    # # Get the data from the Entries table from Monthly, write that data to the 'Data Set'
+    # # sheet and then clear the Entries table
+    # updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
 
-    # Update the month in the BudgetGuiConfig file
-    if(info.month == "December"):
-        updateConfigFile(info.months[0])
+    # # Update the month in the BudgetGuiConfig file
+    # if(info.month == "December"):
+    #     updateConfigFile(info.months[0])
 
-    else: 
-        updateConfigFile(info.months[info.months.index(info.month) + 1])
+    # else: 
+    #     updateConfigFile(info.months[info.months.index(info.month) + 1])
 
     # Save only the EQUATIONS workbook file
     try:
@@ -30,13 +30,13 @@ def new_month():
     except:
         createGUI.displayMessage("Close the excel file, check if it is saved correctly")
 
-    # Perform all of the checks
-    newMonthCheck.makeAllChecks()
+    # # Perform all of the checks
+    # newMonthCheck.makeAllChecks()
 
-    # Call the updateValues function to update the GUI once its complete
-    createGUI.updateGUI()
+    # # Call the updateValues function to update the GUI once its complete
+    # createGUI.updateGUI()
 
-# Copy only the values from the summary table to the "Yearly" Sheet
+# Copy the Summary Table from Monthly to Yearly by grabbing both the category and amounts
 def copySummaryTable(monthSheetData, yearSheetEq, categoryList):
     # Initialize some needed variables
     row = 2
@@ -46,7 +46,7 @@ def copySummaryTable(monthSheetData, yearSheetEq, categoryList):
     nameMonthCell = monthSheetData[row][1]
     amountMonthCell = monthSheetData[row][2]
 
-    # Loop down the amounts column, saving all of the numbers
+    # Loop down the category table on the monthly sheet 
     for l in range(len(categoryList) + 1):
         # Clean values are not needed because excel needs to see the values as numbers not strings
 
@@ -59,52 +59,51 @@ def copySummaryTable(monthSheetData, yearSheetEq, categoryList):
         amountMonthCell = monthSheetData[row][2]
 
 
-    # Write to the yearly sheet of the EQUATIONS file for the current month according to the config file
-    monthCellList = getMonthStartCell()
-    startRow, col = monthCellList[0], monthCellList[1]
+    # Get the next open row in the column of months
+    # Always start the search at row 23 and column C
+    nextOpenRow = info.getRowNum(yearSheetEq, 23, 2)
+    print(nextOpenRow)
 
-    row = startRow
+    monthTitleCell = nextOpenRow
 
-    # Write in the Month name
-    monthCell = yearSheetEq[row - 1][col - 2]
+    # Skip 2 rows unless it is the first row
+    if nextOpenRow != 23:
+        monthTitleCell = nextOpenRow + 2
+    
+    categoryColumn = 2
+    amountColumn = 3
+    
+    # Write in the Month name with formatting
+    monthCell = yearSheetEq[monthTitleCell][categoryColumn]
 
     monthCell.value = info.month
     monthCell.fill = info.greenFill
     monthCell.font = info.yearlyMonth
 
-    # Write in the category names
-    for name in namesList:
-        currentCell = yearSheetEq[row][col-2]
+    row = monthTitleCell + 1 
 
-        # Specific formats for the column title
-        if name == "Category":
-            currentCell.font = info.boldFont
+    # Write in the category names and the amounts
+    for name, amount in zip(namesList, amountsList):
+        currentCategoryCell = yearSheetEq[row][categoryColumn]
+        currentAmountCell = yearSheetEq[row][amountColumn]
 
-        currentCell.value = name
-        currentCell.fill = info.lightGreenFill
-        currentCell.border = info.allBorders
+        # Specific formats for the column titles
+        if name == "Category" or amount == "Amount":
+            currentCategoryCell.font = info.boldFont
+            currentAmountCell.font = info.boldFont
 
-        row += 1
+        # Write and format the category name
+        currentCategoryCell.value = name
+        currentCategoryCell.fill = info.lightGreenFill
+        currentCategoryCell.border = info.allBorders
 
-    # Reset the row
-    row = startRow
-
-    # Write in the data
-    for amt in amountsList:
-        currentCell = yearSheetEq[row][col-1]
-
-        # Specific formats for the column title
-        if amt == "Amount":
-            currentCell.font = info.boldFont
-
-        else:
-            currentCell.number_format = info.accountingFormat
-
-        currentCell.value = amt
-        currentCell.fill = info.lightGreenFill
-        currentCell.border = info.allBorders
+        # Write and format the category's amounr
+        currentAmountCell.value = amount
+        currentAmountCell.fill = info.lightGreenFill
+        currentAmountCell.border = info.allBorders
 
         row += 1
+
 
 # Copy Total Spent, Total(Besides R/P), and NET cells to the yearly sheet
 def copyTotalValues(monthSheetData, yearSheetData, yearSheetEq):
