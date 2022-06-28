@@ -19,10 +19,10 @@ def new_month():
 
     # Update the month in the BudgetGuiConfig file
     if(info.month == "December"):
-        updateConfigFile(info.months[0])
+        updateMonthCell(info.months[0])
 
     else: 
-        updateConfigFile(info.months[info.months.index(info.month) + 1])
+        updateMonthCell(info.months[info.months.index(info.month) + 1])
 
     # Save only the EQUATIONS workbook file
     try:
@@ -152,15 +152,7 @@ def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
     info.numEntries = (lastRow+1) - 25
 
 # Writes the newMonth to the config file and also updates the month from info.py
-def updateConfigFile(newMonth):
-    # Read everything from the text file
-    with open(r"BudgetGuiConfig.txt", 'r') as oldFile:
-        data = oldFile.readlines()
-
-    # Write back all of the data to config files
-    with open(r'BudgetGuiConfig.txt', 'w') as newFile:
-        newFile.writelines(data)
-
+def updateMonthCell(newMonth):
     # Update program month
     info.month = newMonth
 
@@ -168,11 +160,3 @@ def updateConfigFile(newMonth):
     info.monthSheetEq.cell(row = 23, column = 1).value = newMonth
 
     info.window.title("Budget GUI - " + info.month + " - " + info.excelFile)
-
-# Helper function that determines the yearly month starting cell by using month
-# and yearly_month_cells from info.py
-def getMonthStartCell(month=None):
-    if (month == None):
-        return info.yearly_month_cells.get(info.month)
-    else:
-        return info.yearly_month_cells.get(month)
