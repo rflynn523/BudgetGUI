@@ -35,7 +35,7 @@ def makeAllChecks():
     currentMonthCheck(monthSheetData)
 
     # Check that the amounts were entered into the correct month on Yearly
-    amountsIntoYearly(monthSheetData, yearSheetData)
+    # amountsIntoYearly(monthSheetData, yearSheetData)
 
     # Check that the 'old' months Total Spent, and NET values are
     # inserted to the table on Yearly.
@@ -76,24 +76,21 @@ def currentMonthCheck(monthSheetData):
 
 # Check that the amounts were entered into the correct month on Yearly
 def amountsIntoYearly(monthSheetData, yearSheetData):
-    # Get the now previous month index
-    prevMonth = info.months.index(info.month) - 1
-    monthCellList = newMonth.getMonthStartCell(info.months[prevMonth])
+    numCategories = len(info.categoryList)
 
-    # Split into row and column
-    monthRow, monthCol = monthCellList[0], monthCellList[1]
+    # Get the next open row which is now below the month that was just written to yearly
+    nextOpenRow = info.getRowNum(yearSheetData, 23, 2)
 
-    # Get the number of categories
-    row = 3
-    lastRow = info.getRowNum(monthSheetData, row, 1)
+    # Start looking at the beggining of the categories
+    currentRow = nextOpenRow - numCategories
 
     matchesMonthlyAmounts = []
 
     # Loop through the data on yearly
     # None corresponds to no data in the cell
-    for x in range(lastRow - row):
-        matchesMonthlyAmounts.append(yearSheetData[monthRow][monthCol].value == None)
-        row += 1
+    while currentRow <= nextOpenRow:
+        matchesMonthlyAmounts.append(yearSheetData[currentRow][2].value == None)
+        currentRow += 1
 
         # If a false is found return right away
         if (False in matchesMonthlyAmounts):
@@ -106,10 +103,11 @@ def amountsIntoYearly(monthSheetData, yearSheetData):
 # inserted to the table on Yearly.
 def totalsIntoYearly(yearSheetData):
     # With the zero indexed list, info.month is the month number of the previous month
-    row = 21 + info.months.index(info.month)
+    monthRow = info.getRowNum(yearSheetData, 4, 3) - 1
+    print(monthRow)
 
-    totalSpent = (yearSheetData.cell(row=row, column=13).value != None)
-    net = (yearSheetData.cell(row=row, column=14).value != None)
+    totalSpent = (yearSheetData.cell(row=monthRow-1, column=3).value != None)
+    net = (yearSheetData.cell(row=monthRow-1, column=4).value != None)
 
     addResult((totalSpent and net), 3)
 
