@@ -13,16 +13,16 @@ def new_month():
     # Also copy the Total Spent, and Net values from Monthly to Yearly
     copyTotalValues(info.monthSheetData, info.yearSheetData, info.yearSheetEq)
 
-    # # Get the data from the Entries table from Monthly, write that data to the 'Data Set'
-    # # sheet and then clear the Entries table
-    # updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
+    # Get the data from the Entries table from Monthly, write that data to the 'Data Set'
+    # sheet and then clear the Entries table
+    updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
 
-    # # Update the month in the BudgetGuiConfig file
-    # if(info.month == "December"):
-    #     updateConfigFile(info.months[0])
+    # Update the month in the BudgetGuiConfig file
+    if(info.month == "December"):
+        updateConfigFile(info.months[0])
 
-    # else: 
-    #     updateConfigFile(info.months[info.months.index(info.month) + 1])
+    else: 
+        updateConfigFile(info.months[info.months.index(info.month) + 1])
 
     # Save only the EQUATIONS workbook file
     try:
@@ -30,11 +30,11 @@ def new_month():
     except:
         createGUI.displayMessage("Close the excel file, check if it is saved correctly")
 
-    # # Perform all of the checks
-    # newMonthCheck.makeAllChecks()
+    # Perform all of the checks
+    newMonthCheck.makeAllChecks()
 
-    # # Call the updateValues function to update the GUI once its complete
-    # createGUI.updateGUI()
+    # Call the updateValues function to update the GUI once its complete
+    createGUI.updateGUI()
 
 # Copy the Summary Table from Monthly to Yearly by grabbing both the category and amounts
 def copySummaryTable(monthSheetData, yearSheetEq, categoryList):
@@ -90,10 +90,11 @@ def copySummaryTable(monthSheetData, yearSheetEq, categoryList):
         currentCategoryCell.fill = info.lightGreenFill
         currentCategoryCell.border = info.allBorders
 
-        # Write and format the category's amounr
+        # Write and format the category's amount
         currentAmountCell.value = amount
         currentAmountCell.fill = info.lightGreenFill
         currentAmountCell.border = info.allBorders
+        currentAmountCell.number_format = info.accountingFormat
 
         row += 1
 
