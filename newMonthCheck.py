@@ -48,7 +48,7 @@ def makeAllChecks():
     emptyEntryTable(monthSheetData)
 
     # Make sure the data was inserted into the Data Set sheet with the MONTH() formula
-    dataSetEntered(dataSetSheetData, yearSheetData)
+    # dataSetEntered(dataSetSheetData, yearSheetData)
 
     # Finally show the new window to the user
     showGUI()
@@ -156,9 +156,13 @@ def dataSetEntered(dataSetSheetData, yearSheetData):
     # Get the last row number
     lastRow = info.getRowNum(dataSetSheetData, firstRow, 4) - 1
 
+    print(lastRow)
+    print(firstRow)
+    print(len(info.categoryList))
+
     # Simply check if the number of rows in Data Set with the current month
     # match the number of entries that was saved while clearing the entries table
-    addResult((lastRow - firstRow == info.numEntries), 6)
+    addResult(((lastRow - firstRow) == len(info.categoryList)), 6)
 
 # Helper funciton that adds the results to the pop-up window
 def addResult(result, num):
