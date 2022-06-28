@@ -50,10 +50,6 @@ def getRowNum(sheet, startRow, startCol, key=None, month=None):
 def createBackUpFile(newFileName):
     wbEq.save(newFileName)
 
-def getCurrentMonth():
-    pass
-    # Read the current month from the excel file cell
-
 # Function that opens the file dialog box so you can select the Excel file
 def select_file():
     fileTypes = (('excel files', '*.xlsx'), ('All files', '*.*'))
@@ -111,29 +107,19 @@ boldFont = Font(bold = True)
 
 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-# Cells correspond to the above months and contain the first cell under 'Amount' on the Yearly sheet
-# Updated the cells on 5/2/21
-ApartmentCells = [[5,3], [5,6], [5,9], [17,3], [17,6], [17,9], [29,3], [29,6], [29,9], [41,3], [41,6], [41,9]]
-ExpenseCells = [[5,3], [5,6], [5,9], [21,3], [21,6], [21,9], [37,3], [37,6], [37,9], [53,3], [53,6], [53,9]]
+# # Cells correspond to the above months and contain the first cell under 'Amount' on the Yearly sheet
+# # Updated the cells on 5/2/21
+# 
+# These cells are not needed as of 6/27/2022, changed the format of the yearly sheet to make it easier to make changes to new or old categories
+# Keeping for now just in case I need to go back, but eventually can be REMOVED
+# 
+# ApartmentCells = [[5,3], [5,6], [5,9], [17,3], [17,6], [17,9], [29,3], [29,6], [29,9], [41,3], [41,6], [41,9]]
+# ExpenseCells = [[5,3], [5,6], [5,9], [21,3], [21,6], [21,9], [37,3], [37,6], [37,9], [53,3], [53,6], [53,9]]
 
 # Assume that the file is the Expenses
+# REMOVE but also need to remove from newMonthCheck
 isApartment = False
 
-# The two main excel sheets are Apartment and Expenses
-# This handles the different yearly starting cells
-# Apartment Worksheet
-if(excelFile.strip('.xlsx') == "Apartment" or excelFile.strip('.xlsx') == "NewMonth_Backup_Apartment" or excelFile.strip('.xlsx') == "Test_Apartment"):
-    isApartment = True
-    cells = ApartmentCells 
-
-# Expenses Worksheet
-else:
-    print("ASSUMING ADRI YEARLY CELLS ARE THE SAME AS MINE")
-    cells = ExpenseCells
-
-# Create the dictionary to map months to cells in the form of:
-#  {"Month" : [row, col]}
-yearly_month_cells = {k:v for k,v in zip(months, cells)}
 
 # Load the workbooks
 wbData = xl.load_workbook(excelFile, data_only=True)
