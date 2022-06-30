@@ -30,7 +30,7 @@ def createEntryWindow():
 # Write the data to the Excel file after the submit button is pressed
 def submit():
     # Reload the Monthly Data sheet to allow for multiple enrtries
-    newSheet = xl.load_workbook(info.excelFile, data_only=True)["Monthly"]
+    newSheet = xl.load_workbook(info.excelFilePath, data_only=True)["Monthly"]
 
     # Get the next open row in the entry table
     openRow = info.getRowNum(newSheet, 24, 1)
@@ -74,7 +74,7 @@ def submit():
 
     # Save the file
     try:
-        info.wbEq.save(info.excelFile)
+        info.wbEq.save(info.excelFilePath)
         # Inform the user
         createGUI.displayMessage(itemEntry.get() + " was added to the Entry Table on Monthly. \n\n"
                                                    "Due to limitations of Openpyxl you need to go \n in and save the excel file"

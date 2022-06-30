@@ -15,8 +15,8 @@ def makeAllChecks():
         tk.Label(checkWindow, text=checkList[x] + ":", font="Calibri 12").grid(row=x, column=0,columnspan=1, sticky=tk.W, padx=5, pady=5)
 
     # Relaod the workbooks
-    wbData = xl.load_workbook(info.excelFile, data_only=True)
-    wbEq = xl.load_workbook(info.excelFile, data_only=False)
+    wbData = xl.load_workbook(info.excelFilePath, data_only=True)
+    wbEq = xl.load_workbook(info.excelFilePath, data_only=False)
 
     # Get the needed sheets
     monthSheetData = wbData['Monthly']

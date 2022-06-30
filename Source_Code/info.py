@@ -54,22 +54,25 @@ def createBackUpFile(newFileName):
 def select_file():
     fileTypes = (('excel files', '*.xlsx'), ('All files', '*.*'))
 
-    fileName = fd.askopenfilename(
+    filePath = fd.askopenfilename(
         title = 'Select Excel file',
-        initialdir = 'C:/Users/rflyn/Desktop/BudgetGUI/',
+        initialdir = 'C:/Users/rflyn/Desktop/Budgets/',
         filetypes = fileTypes
     )
 
-    print(fileName)
+    print(filePath)
 
-    fileNameStripped = fileName.split("/")
-    return fileNameStripped[-1]
+    # fileNameStripped = fileName.split("/")
+    # print(fileNameStripped)
+    # return fileNameStripped[-1]
 
+    return filePath
 
 # Window variable
 window = tk.Tk()
 
-excelFile = select_file()
+excelFilePath = select_file()
+excelFileName = excelFilePath.split("/")[-1]
 
 # Formatting and other info
 accountingFormat = r'_("$"* #,##0.00_)_("$"* \(#,##0.00\)_("$"* "-"??_)_(@_)'
@@ -120,10 +123,9 @@ months = ["January", "February", "March", "April", "May", "June", "July", "Augus
 # REMOVE but also need to remove from newMonthCheck
 isApartment = False
 
-
 # Load the workbooks
-wbData = xl.load_workbook(excelFile, data_only=True)
-wbEq = xl.load_workbook(excelFile, data_only=False)
+wbData = xl.load_workbook(excelFilePath, data_only=True)
+wbEq = xl.load_workbook(excelFilePath, data_only=False)
 
 # Get the needed sheets
 monthSheetData = wbData['Monthly']

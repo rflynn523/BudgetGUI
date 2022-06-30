@@ -108,10 +108,10 @@ def clean_values(cell):
 def updateGUI():
 
     # Re-load the workbook
-    newWbData = xl.load_workbook(info.excelFile, data_only=True)
+    newWbData = xl.load_workbook(info.excelFilePath, data_only=True)
 
     # Update the Display Month
-    info.window.title("Budget GUI - " + info.month + " " + info.excelFile)
+    info.window.title("Budget GUI - " + info.month + " " + info.excelFileName)
 
     # Loops through the category names starting with the rent cell
     categoryList = []

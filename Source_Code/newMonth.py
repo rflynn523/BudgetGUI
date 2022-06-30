@@ -5,7 +5,7 @@ import newMonthCheck
 
 def new_month():
     # Save a backup
-    info.createBackUpFile("NewMonth_Backup_" + info.excelFile)
+    info.createBackUpFile("C:/Users/rflyn/Desktop/BudgetGUI/Backups/NewMonth_Backup_" + info.excelFileName)
 
     # Copy the VALUES from the monthly Category Table to the corresponding table in Yearly
     copySummaryTable(info.monthSheetData, info.yearSheetEq, info.categoryList)
@@ -26,7 +26,7 @@ def new_month():
 
     # Save only the EQUATIONS workbook file
     try:
-        info.wbEq.save(info.excelFile)
+        info.wbEq.save(info.excelFilePath)
     except:
         createGUI.displayMessage("Close the excel file, check if it is saved correctly")
 
@@ -159,4 +159,4 @@ def updateMonthCell(newMonth):
     # Write the new month to the monthly cell
     info.monthSheetEq.cell(row = 23, column = 1).value = newMonth
 
-    info.window.title("Budget GUI - " + info.month + " - " + info.excelFile)
+    info.window.title("Budget GUI - " + info.month + " - " + info.excelFileName)

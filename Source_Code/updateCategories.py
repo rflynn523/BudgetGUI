@@ -36,7 +36,7 @@ def createUpdateWindow():
 # Insert the new category into the correct places
 def insert(insertBefore):
     # Save a backup
-    info.createBackUpFile("NewMonth_BackUp_" + info.excelFile);
+    info.createBackUpFile("C:/Users/rflyn/Desktop/Budgets/UpdateCategories_Backup_" + info.excelFileName)
 
     # Grab the user data
     categoryName = newNameEntry.get()
@@ -56,7 +56,7 @@ def insert(insertBefore):
 
     # Save the file
     try:
-        info.wbEq.save(info.excelFile)
+        info.wbEq.save(info.excelFilePath)
         # Inform the user
         createGUI.displayMessage( str(categoryName) +" was inserted to the Monthly and Yearly sheets\n\n"
                                  "Due to limitations of Openpyxl you need to go \n in and save the excel file"

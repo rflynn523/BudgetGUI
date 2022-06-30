@@ -24,12 +24,12 @@ except Exception as e:
 # Simply open the Expenses excel file
 def open_excel():
     # TestBudget.xlsx or whatever file needs to be in the same directory to work
-    os.startfile(info.excelFile)
+    os.startfile(info.excelFilePath)
     info.window.destroy()
 
 
 # Set up and display GUI
-info.window.title("Budget GUI - " + info.month + " - " + info.excelFile)
+info.window.title("Budget GUI - " + info.month + " - " + info.excelFileName)
 numRows = createGUI.create_GUI(info.monthSheetData)
 numRows += 1
 
