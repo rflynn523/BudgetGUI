@@ -17,6 +17,9 @@ def new_month():
     # sheet and then clear the Entries table
     updateEntryTable(info.monthSheetData, info.monthSheetEq, info.dataSetSheetEq)
 
+    # Reset the tolls amount back to 0
+    resetTollValue(info.monthSheetEq, info.categoryList)
+
     # Update the month in the BudgetGuiConfig file
     if(info.month == "December"):
         updateMonthCell(info.months[0])
@@ -150,6 +153,25 @@ def updateEntryTable(monthSheetData, monthSheetEq, dataSetSheet):
 
     # Save the number of entries for checking purposes
     info.numEntries = (lastRow+1) - 25
+
+def resetTollValue(monthSheetEq, categoryList):
+    # Initialize some needed variables
+    row = 2
+
+    nameMonthCell = monthSheetEq[row][1]
+    amountMonthCell = monthSheetEq[row][2]
+
+    # Loop down the category table on the monthly sheet 
+    for l in range(len(categoryList) + 1):
+        if (nameMonthCell.value == "Tolls"):
+            amountMonthCell.value = 0
+            break
+
+        row += 1
+
+        nameMonthCell = monthSheetEq[row][1]
+        amountMonthCell = monthSheetEq[row][2]
+
 
 # Writes the newMonth to the config file and also updates the month from info.py
 def updateMonthCell(newMonth):

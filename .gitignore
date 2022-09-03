@@ -6,3 +6,5 @@
 "Budget Template.xltx
 
 *.pyc
+__pycache__/addEntry.cpython-38.pyc
+__pycache__/*
